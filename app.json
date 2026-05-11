@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Shumi Offerings",
+    "slug": "shumi-offerings",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#006400"
+    },
+    "android": {
+      "package": "com.shumi.offerings",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#006400"
+      },
+      "permissions": []
+    },
+    "plugins": [],
+    "extra": {
+      "eas": {
+        "projectId": "7ed44055-99c8-48ce-8f01-03d11b6c290f"
+      }
+    }
+  }
+}
