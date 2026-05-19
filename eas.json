@@ -10,10 +10,13 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "EAS_BUILD_PROP_ANDROID_ENABLE_SEPARATE_BUILD_PER_CPU_ARCHITECTURE": "true"
+      },
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
       }
-
     },
     "production": {
       "autoIncrement": true,
