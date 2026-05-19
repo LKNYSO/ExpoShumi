@@ -384,13 +384,14 @@ export default function App() {
   const today = todayString();
 
   // screen: 'calculator' | 'records' | 'detail'
-  const [screen,     setScreen]     = useState('calculator');
-  const [counts,     setCounts]     = useState({ 'Sabbath School': {}, 'Divine': {} });
-  const [result,     setResult]     = useState(null);
-  const [records,    setRecords]    = useState([]);
-  const [selected,   setSelected]   = useState(null);  // OfferingRecord being viewed
-  const [editMode,   setEditMode]   = useState(false); // true when editing an existing record
-  const [storeReady, setStoreReady] = useState(false);
+  const [screen,      setScreen]      = useState('calculator');
+  const [activeType,  setActiveType]  = useState('Sabbath School');
+  const [counts,      setCounts]      = useState({ 'Sabbath School': {}, 'Divine': {} });
+  const [result,      setResult]      = useState(null);
+  const [records,     setRecords]     = useState([]);
+  const [selected,    setSelected]    = useState(null);  // OfferingRecord being viewed
+  const [editMode,    setEditMode]    = useState(false); // true when editing an existing record
+  const [storeReady,  setStoreReady]  = useState(false);
 
   // Boot: load store from AsyncStorage exactly once
   useEffect(() => {
@@ -402,13 +403,13 @@ export default function App() {
 
   // ── Calculator ─────────────────────────────────────────────────────────────
 
-  const handleChange = useCallback((offeringType, id, text) => {
+  const handleChange = useCallback((id, text) => {
     if (text !== '' && !/^\d+$/.test(text)) return;
     setCounts(prev => ({
       ...prev,
-      [offeringType]: { ...prev[offeringType], [id]: text },
+      [activeType]: { ...prev[activeType], [id]: text },
     }));
-  }, []);
+  }, [activeType]);
 
   const handleCalculate = () => {
     const results = {};
@@ -569,37 +570,39 @@ export default function App() {
               </View>
             )}
 
-            {/* ── Sabbath School ── */}
-            <View style={styles.card}>
-              <Text style={styles.sectionTitle}>Sabbath School Offering</Text>
-              <Text style={styles.subSectionTitle}>Notes</Text>
-              {DENOMINATIONS.filter(d => d.isNote).map(denom => (
-                <DenomRow key={`ss-${denom.id}`} denom={denom}
-                  value={counts['Sabbath School'][denom.id] || ''}
-                  onChange={text => handleChange('Sabbath School', denom.id, text)} />
-              ))}
-              <Text style={styles.subSectionTitle}>Coins</Text>
-              {DENOMINATIONS.filter(d => !d.isNote).map(denom => (
-                <DenomRow key={`ss-${denom.id}`} denom={denom}
-                  value={counts['Sabbath School'][denom.id] || ''}
-                  onChange={text => handleChange('Sabbath School', denom.id, text)} />
+            {/* ── Offering type selector ── */}
+            <View style={styles.radioGroup}>
+              {OFFERING_TYPES.map(type => (
+                <TouchableOpacity
+                  key={type}
+                  style={styles.radioOption}
+                  onPress={() => setActiveType(type)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.radioCircle, activeType === type && styles.radioCircleSelected]}>
+                    {activeType === type && <View style={styles.radioDot} />}
+                  </View>
+                  <Text style={[styles.radioLabel, activeType === type && styles.radioLabelSelected]}>
+                    {type}
+                  </Text>
+                </TouchableOpacity>
               ))}
             </View>
 
-            {/* ── Divine ── */}
+            {/* ── Single input card (shared by both types) ── */}
             <View style={styles.card}>
-              <Text style={styles.sectionTitle}>Divine Offering</Text>
+              <Text style={styles.sectionTitle}>{activeType} Offering</Text>
               <Text style={styles.subSectionTitle}>Notes</Text>
               {DENOMINATIONS.filter(d => d.isNote).map(denom => (
-                <DenomRow key={`div-${denom.id}`} denom={denom}
-                  value={counts['Divine'][denom.id] || ''}
-                  onChange={text => handleChange('Divine', denom.id, text)} />
+                <DenomRow key={denom.id} denom={denom}
+                  value={counts[activeType][denom.id] || ''}
+                  onChange={text => handleChange(denom.id, text)} />
               ))}
               <Text style={styles.subSectionTitle}>Coins</Text>
               {DENOMINATIONS.filter(d => !d.isNote).map(denom => (
-                <DenomRow key={`div-${denom.id}`} denom={denom}
-                  value={counts['Divine'][denom.id] || ''}
-                  onChange={text => handleChange('Divine', denom.id, text)} />
+                <DenomRow key={denom.id} denom={denom}
+                  value={counts[activeType][denom.id] || ''}
+                  onChange={text => handleChange(denom.id, text)} />
               ))}
             </View>
 
@@ -825,6 +828,23 @@ const styles = StyleSheet.create({
     color: '#555',
     flex: 1,
   },
+
+  /* Radio buttons */
+  radioGroup: { flexDirection: 'row', marginHorizontal: 12, marginTop: 10, gap: 12 },
+  radioOption: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff',
+    borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14, gap: 10,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+  },
+  radioCircle: {
+    width: 20, height: 20, borderRadius: 10, borderWidth: 2,
+    borderColor: '#ccc', alignItems: 'center', justifyContent: 'center',
+  },
+  radioCircleSelected: { borderColor: GREEN },
+  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: GREEN },
+  radioLabel: { fontSize: 13, fontWeight: '600', color: '#888' },
+  radioLabelSelected: { color: GREEN, fontWeight: '800' },
 
   /* Calculate button */
   calcBtn: {

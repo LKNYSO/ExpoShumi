@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#006400"
     },
@@ -15,7 +15,7 @@
       "package": "com.shumi.offerings",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundColor": "#006400"
       },
       "permissions": []
@@ -24,6 +24,23 @@
     "extra": {
       "eas": {
         "projectId": "7ed44055-99c8-48ce-8f01-03d11b6c290f"
+      }
+    },
+    "owner": "lknyso"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
       }
     }
   }
