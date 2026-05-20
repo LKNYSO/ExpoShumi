@@ -27,7 +27,13 @@
           "android": {
             "enableProguardInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": true,
-            "useLegacyPackaging": true
+            "useLegacyPackaging": true,
+            "packagingOptions": {
+              "pickFirsts": [],
+              "excludes": [],
+              "merges": [],
+              "doNotStrip": []
+            }
           }
         }
       ]
